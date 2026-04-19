@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夏夏验证系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        /* ========== 开场炫酷动画 ========== */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* 矩阵雨背景 */
+        .matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            color: #0f0;
+            font-size: 14px;
+            white-space: nowrap;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh); }
+        }
+
+        /* 加载文字和进度条 */
+        .loader-text {
+            color: #0f0;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #0f0;
+        }
+        .progress-bar {
+            width: 300px;
+            height: 20px;
+            border: 2px solid #0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #111;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0f0, #0ff);
+            box-shadow: 0 0 10px #0f0;
+            transition: width 0.1s linear;
+        }
+
+        /* ========== 验证系统弹窗 ========== */
+        .verify-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            border: 2px solid #00ccff;
+            border-radius: 12px;
+            padding: 35px;
+            width: 85%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 0 30px #00ccff;
+            display: none;
+            z-index: 999;
+        }
+        .verify-box.show {
+            display: block;
+            animation: popIn 0.5s ease;
+        }
+        @keyframes popIn {
+            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .verify-box h2 {
+            color: #00ccff;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+        .verify-box input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .verify-box button {
+            width: 100%;
+            padding: 14px;
+            background: #00ccff;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .verify-box button:hover {
+            background: #00aacc;
+        }
+        .error-tip {
+            color: #ff4444;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* ========== 验证成功：粉色520刷屏效果 ========== */
+        .success-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a0a1f, #2d0a20, #400f2a);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .success-page.show {
+            display: flex;
+        }
+
+        /* 520文字雨 */
+        .five20-rain {
+            position: absolute;
+            top: -100px;
+            color: #ff69b4;
+            font-size: 30px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493;
+            white-space: nowrap;
+            animation: five20Fall linear infinite;
+        }
+        @keyframes five20Fall {
+            to { transform: translateY(110vh) rotate(15deg); opacity: 0; }
+        }
+
+        /* 中心主520文字 */
+        .center-520 {
+            font-size: 120px;
+            font-weight: bold;
+            color: #ff69b4;
+            text-shadow: 0 0 20px #ff69b4, 0 0 40px #ff1493, 0 0 60px #ff0066;
+            z-index: 10;
+            animation: pulse 1.5s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开场动画 -->
+    <div class="loader" id="loader">
+        <div class="matrix-bg" id="matrix"></div>
+        <div class="loader-text" id="loaderText">夏夏验证系统正在加载...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- 验证弹窗 -->
+    <div class="verify-box" id="verifyBox">
+        <h2>🔐 夏夏验证系统</h2>
+        <input type="text" id="passwordInput" placeholder="请输入验证密码">
+        <button onclick="checkPassword()">提交验证</button>
+        <div class="error-tip" id="errorTip">❌ 输入错误，请重新输入！</div>
+    </div>
+
+    <!-- 验证成功：粉色520刷屏页面 -->
+    <div class="success-page" id="successPage">
+        <div class="center-520">520</div>
+    </div>
+
+    <script>
+        // 生成开场矩阵雨背景
+        function createMatrix() {
+            const matrix = document.getElementById('matrix');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+            const columnCount = Math.floor(window.innerWidth / 20);
+
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = `${i * 20}px`;
+                column.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                column.style.animationDelay = `${Math.random() * 10}s`;
+
+                let text = '';
+                for (let j = 0; j < 50; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)] + '<br>';
+                }
+                column.innerHTML = text;
+                matrix.appendChild(column);
+            }
+        }
+
+        // 加载进度动画
+        function startLoading() {
+            const progr
