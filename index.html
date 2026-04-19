@@ -5,125 +5,318 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>夏夏验证系统</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei,sans-serif}
-
-/* 粉色加载页 */
-#loading{
-  position:fixed;top:0;left:0;width:100%;height:100vh;
-  background: linear-gradient(135deg, #ffd6e7, #ff9eb8);
-  display:flex;justify-content:center;align-items:center;
-  flex-direction:column;z-index:999;color:#fff;
-}
-.load-text{
-  font-size:28px;margin-bottom:25px;
-  text-shadow:0 0 15px #ff69b4;
-}
-.bar{
-  width:80%;height:22px;border-radius:12px;
-  background:rgba(255,255,255,0.4);overflow:hidden;
-}
-.fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg, #ff8da8, #ff5c8a);
-  transition:width .1s;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+  font-weight: 300;
 }
 
-/* 粉色验证页 */
-#verify{
-  position:fixed;top:0;left:0;width:100%;height:100vh;
-  background:linear-gradient(135deg, #ffe0ef, #ffc0d5);
-  display:flex;justify-content:center;align-items:center;
-  display:none;
-}
-.box{
-  background:rgba(255,255,255,0.5);
-  padding:50px;border-radius:25px;
-  backdrop-filter:blur(8px);
-  text-align:center;
-  box-shadow:0 0 35px rgba(255,105,180,0.5);
-}
-.title{
-  font-size:28px;margin-bottom:25px;color:#ff4d8f;
-}
-#pwd{
-  padding:12px 18px;width:240px;border-radius:25px;
-  border:2px solid #ff85a2;background:rgba(255,255,255,0.6);
-  color:#d83a6d;font-size:17px;text-align:center;outline:none;
-  margin-bottom:20px;
-}
-button{
-  padding:11px 30px;border-radius:25px;
-  background:linear-gradient(90deg,#ff85a2,#ff5c8a);
-  color:#fff;border:none;font-size:16px;cursor:pointer;
+body {
+  background: #0f172a;
+  overflow: hidden;
 }
 
-/* 飘字特效 */
-.love{
-  position:fixed;font-size:26px;
-  animation:fly 4.5s linear forwards;
-  pointer-events:none;z-index:100;
+/* 樱花 */
+#sakura-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
-@keyframes fly{
-  0%{transform:translateY(0) rotate(0deg);opacity:1}
-  100%{transform:translateY(-100vh) rotate(720deg);opacity:0}
+.sakura {
+  position: absolute;
+  background: #ffc2d1;
+  border-radius: 50% 0 50% 50%;
+  opacity: 0.75;
+  animation: fall linear infinite;
+}
+@keyframes fall {
+  0% { transform: translateY(-10vh); opacity: 0.9; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+.light {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, rgba(255,183,197,0.15), transparent 60%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 高级加载页 */
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), #070b16;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 999;
+  color: #fff;
+}
+.load-text {
+  font-size: 32px;
+  margin-bottom: 40px;
+  text-shadow: 0 0 20px rgba(255,194,209,0.6);
+  letter-spacing: 4px;
+}
+.bar {
+  width: 80%;
+  max-width: 460px;
+  height: 24px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+.fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff8fab, #ffc2d1, #ffe5ec);
+  transition: width 0.14s;
+}
+
+/* 验证页 */
+#verify {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+  z-index: 10;
+}
+.box {
+  background: rgba(255,255,255,0.06);
+  padding: 60px 50px;
+  border-radius: 30px;
+  backdrop-filter: blur(15px);
+  text-align: center;
+  box-shadow: 0 0 50px rgba(255,183,197,0.2);
+  border: 1px solid rgba(255,194,209,0.15);
+}
+.title {
+  font-size: 28px;
+  margin-bottom: 32px;
+  color: #fff;
+  letter-spacing: 2px;
+}
+#pwd {
+  padding: 16px 24px;
+  width: 280px;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-size: 17px;
+  text-align: center;
+  outline: none;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+}
+button {
+  padding: 14px 40px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #ff8fab, #ffc2d1);
+  color: #fff;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+/* 问答页面 */
+.question-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), #0f172a;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* 成功页面 */
+#success-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), #0f172a;
+  display: none;
+  z-index: 10;
+}
+
+/* 飘字 */
+.love-text {
+  position: fixed;
+  font-size: 28px;
+  animation: float-up 6s linear forwards;
+  pointer-events: none;
+  z-index: 100;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(255,194,209,0.4);
+}
+@keyframes float-up {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+.bottom-quote {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.85);
+  font-size: 19px;
+  letter-spacing: 3px;
+  line-height: 1.8;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(255,194,209,0.5);
+  z-index: 101;
 }
 </style>
 </head>
+
 <body>
+  <div class="light"></div>
+  <div id="sakura-container"></div>
 
-<div id="loading">
-  <div class="load-text">夏夏验证系统加载中...</div>
-  <div class="bar"><div class="fill" id="fill"></div></div>
-</div>
-
-<div id="verify">
-  <div class="box">
-    <div class="title">请输入验证口令</div>
-    <input type="text" id="pwd" placeholder="输入关键词">
-    <br><br>
-    <button onclick="check()">验证</button>
+  <!-- 高级加载 -->
+  <div id="loading">
+    <div class="load-text">爱意加载中...</div>
+    <div class="bar"><div class="fill" id="fill"></div></div>
   </div>
-</div>
+
+  <!-- 验证 -->
+  <div id="verify">
+    <div class="box">
+      <div class="title">请填写答案</div>
+      <input type="text" id="pwd" placeholder="输入正确答案">
+      <br><br>
+      <button onclick="check()">确认</button>
+    </div>
+  </div>
+
+  <!-- 问题1 -->
+  <div id="q1" class="question-page">
+    <div class="box">
+      <div class="title">你喜欢的季节是？</div>
+      <input type="text" id="ans1" placeholder="请输入你的答案">
+      <br><br>
+      <button onclick="next(1)">下一题</button>
+    </div>
+  </div>
+
+  <!-- 问题2 -->
+  <div id="q2" class="question-page">
+    <div class="box">
+      <div class="title">你喜欢的颜色是？</div>
+      <input type="text" id="ans2" placeholder="请输入你的答案">
+      <br><br>
+      <button onclick="next(2)">下一题</button>
+    </div>
+  </div>
+
+  <!-- 问题3 -->
+  <div id="q3" class="question-page">
+    <div class="box">
+      <div class="title">你喜欢的食物是？</div>
+      <input type="text" id="ans3" placeholder="请输入你的答案">
+      <br><br>
+      <button onclick="next(3)">下一题</button>
+    </div>
+  </div>
+
+  <!-- 问题4 -->
+  <div id="q4" class="question-page">
+    <div class="box">
+      <div class="title">你喜欢的一句话是？</div>
+      <input type="text" id="ans4" placeholder="请输入你的答案">
+      <br><br>
+      <button onclick="next(4)">完成</button>
+    </div>
+  </div>
+
+  <!-- 成功 -->
+  <div id="success-page">
+    <div class="bottom-quote">
+      山野万里，你是我藏在微风里的喜欢<br>
+      岁岁年年，万般皆是你
+    </div>
+  </div>
 
 <script>
-let w=0
-let i=setInterval(()=>{
-  w+=Math.random()*7
-  if(w>=100){
-    w=100;clearInterval(i);
-    setTimeout(()=>{
-      document.getElementById("loading").style.display="none"
-      document.getElementById("verify").style.display="flex"
-    },600)
-  }
-  document.getElementById("fill").style.width=w+"%"
-},100)
+// 樱花
+function createSakura() {
+  const c = document.getElementById('sakura-container');
+  const s = document.createElement('div');
+  s.classList.add('sakura');
+  const size = Math.random() * 16 + 5;
+  s.style.width = size + 'px';
+  s.style.height = size + 'px';
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.animationDuration = (Math.random() * 6 + 5) + 's';
+  c.appendChild(s);
+  setTimeout(() => s.remove(), 11000);
+}
+setInterval(createSakura, 120);
 
-function check(){
-  let v=document.getElementById("pwd").value.trim()
-  if(v=="夏夏"){
-    document.getElementById("verify").style.display="none"
-    // 更深的全屏粉色背景
-    document.body.style.background="linear-gradient(#ffcce7, #ff9eb8)"
-    setInterval(make, 50)
-  }else{
-    alert("口令错误")
+// 加载
+let w = 0;
+let load = setInterval(() => {
+  w += Math.random() * 7;
+  if (w >= 100) {
+    w = 100; clearInterval(load);
+    setTimeout(() => {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('verify').style.display = 'flex';
+    }, 600);
+  }
+  document.getElementById('fill').style.width = w + '%';
+}, 100);
+
+// 验证答案
+function check() {
+  let v = document.getElementById('pwd').value.trim();
+  if (v == "夏夏") {
+    document.getElementById('verify').style.display = 'none';
+    document.getElementById('q1').style.display = 'flex';
+  } else {
+    alert("答案不对哦～");
   }
 }
 
-function make(){
-  let arr=["520","❤️","🌹","💖","💘","💝","💓","💕","💗"]
-  let t=arr[Math.floor(Math.random()*arr.length)]
-  let d=document.createElement("div")
-  d.className="love"
-  d.innerText=t
-  d.style.left=Math.random()*100+"vw"
-  d.style.top="100vh"
-  d.style.color=["#ff4d8f","#ff7ba3","#ffaccf","#ffd6e6","#ffffff"][Math.floor(Math.random()*5)]
-  d.style.fontSize=18+Math.random()*22+"px"
-  document.body.appendChild(d)
-  setTimeout(()=>d.remove(),4500)
-}
-</script>
-</body>
-</html>
+// 下一题 —— 必须输入内容才能过
+function next(n) {
+  let val = '';
+  if (n === 1) val = document.getElementById('ans1').value.trim();
+  if (n === 2) val = document.getElementById('ans2').value.trim();
+  if (n === 3) val = document.getElementById('ans3').value.trim();
+  if (n === 4) val = document.getElementById('ans4').value.trim();
+
+  if (!val) {
+    alert("请输入你的答案哦～");
+    return;
+  }
+
+  if (n == 1) {
+    document.getElementById('q1').style.display = 'none';
+    document.getElementBy
